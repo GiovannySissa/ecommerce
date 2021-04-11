@@ -10,7 +10,7 @@ import org.apache.kafka.clients.producer.ProducerRecord
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AkkaMessageProducer(producerSettings: ProducerSettings[String, Array[Byte]])(implicit
+class AkkaMessageProducer private (producerSettings: ProducerSettings[String, Array[Byte]])(implicit
     actorSystem: ActorSystem,
     exc: ExecutionContext
 ) extends MessageProducer[Future[*]] {
@@ -22,7 +22,7 @@ class AkkaMessageProducer(producerSettings: ProducerSettings[String, Array[Byte]
     .map {
       case ProducerMessage.Result(metadata, message) =>
         s"${metadata.topic}/${metadata.partition} ${metadata.offset}: $message"
-      case ProducerMessage.MultiResult(parts, passThrough) =>
+      case ProducerMessage.MultiResult(parts, _) =>
         parts
           .map { case MultiResultPart(metadata, record) =>
             s"${metadata.topic}/${metadata.partition} ${metadata.offset}: ${record.value}"
@@ -30,7 +30,15 @@ class AkkaMessageProducer(producerSettings: ProducerSettings[String, Array[Byte]
           .mkString(", ")
       case ProducerMessage.PassThroughResult(_) => "passed through"
     }
-    .runWith(Sink.foreach(println))
+    .runWith(Sink.foreach(println)) // todo [Optional] use some logger
     .map(_ => ())
+
+}
+
+object AkkaMessageProducer {
+  def apply(
+      producerSettings: ProducerSettings[String, Array[Byte]]
+  )(implicit actorSystem: ActorSystem, exc: ExecutionContext) =
+    new AkkaMessageProducer(producerSettings)
 
 }

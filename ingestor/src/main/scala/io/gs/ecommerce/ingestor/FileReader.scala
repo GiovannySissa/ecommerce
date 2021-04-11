@@ -11,22 +11,15 @@ import scala.concurrent.Future
 final class FileReader private (filePath: Path) {
   implicit val system: ActorSystem = akka.actor.ActorSystem("Repl")
 
-  def read: Future[List[String]] = {
-    val x: Source[String, Future[IOResult]] = FileIO
-      .fromPath(filePath)
-      .via(
-        Framing
-          .delimiter(ByteString("\n"), 4096, true)
-          .map(s => s.utf8String)
-      )
+  def read: Source[String, Future[IOResult]] = {
     FileIO
       .fromPath(filePath)
       .via(
         Framing
           .delimiter(ByteString("\n"), 4096, true)
-          .map(s => s.utf8String)
+          .map(_.utf8String)
       )
-      .runWith(Sink.collection)
+//      .runWith(Sink.collection)
   }
 
 }

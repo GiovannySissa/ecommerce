@@ -47,8 +47,16 @@ final case class InvalidCustomerId()
       )
     )
 
-final case class InvalidCountry() extends InvalidInput(
-  Error(
-    "Empty country is not allowed"
-  )
-)
+final case class InvalidCountry()
+    extends InvalidInput(
+      Error(
+        "Empty country is not allowed"
+      )
+    )
+
+final case class InvalidWithMsg(msg: String)
+    extends InvalidInput(
+      Error(
+        msg
+      )
+    )

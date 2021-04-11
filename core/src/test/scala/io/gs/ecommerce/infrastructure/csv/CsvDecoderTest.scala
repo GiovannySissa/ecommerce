@@ -1,5 +1,6 @@
 package io.gs.ecommerce.infrastructure.csv
 
+import cats.data.Validated
 import io.gs.ecommerce.domain.Order
 import io.gs.ecommerce.generators.CsvGenerator
 import org.scalatest.propspec.AnyPropSpec
@@ -38,6 +39,12 @@ class CsvDecoderTest extends AnyPropSpec with CsvGenerator {
   property("Can't decode an invalid order with incomplete input") {
     val decoder = CsvLineDecoder[Order]
     forAll(invalidOrderCsvGen) { in =>
+      val x = decoder.decode(in)
+      x match {
+        case Validated.Valid(a) => println(a)
+        case Validated.Invalid(e) =>
+          e.toList.foreach(s => println(s"${s.getClass.getName} ---- ${s.getClass.getSimpleName} "))
+      }
       assert(decoder.decode(in).isInvalid)
     }
   }
