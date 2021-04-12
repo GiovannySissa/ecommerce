@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+import "google/protobuf/wrappers.proto";
+
+
+package io.gs.ecommerce.infrastructure.kafka.schema;
+
+message SeqErrors{
+  repeated ErrorMsg errors = 1;
+}
+
+message ErrorMsg {
+  google.protobuf.StringValue tag = 1;
+  google.protobuf.StringValue msg = 2;
+}

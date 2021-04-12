@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/timestamp.proto";
+
+package io.gs.ecommerce.infrastructure.kafka.schema;
+
+message Event {
+  google.protobuf.Timestamp timestamp = 1;
+  google.protobuf.StringValue action = 2;
+  oneof payload{
+    OrderCreated createdOrder = 3;
+    OrderDeleted orderDeleted = 4;
+  }
+}
+
+message OrderCreated {
+  google.protobuf.StringValue invoiceNo = 1;
+  google.protobuf.StringValue StockCode = 2 ;
+  google.protobuf.StringValue orderDescription = 3;
+  google.protobuf.Int32Value quantity = 4;
+  google.protobuf.Timestamp invoiceDate = 5;
+  google.protobuf.FloatValue unitPrice = 6;
+  google.protobuf.StringValue customerId = 7;
+  google.protobuf.StringValue country = 8;
+}
+
+message OrderDeleted {
+  google.protobuf.StringValue invoiceNo = 1;
+}
