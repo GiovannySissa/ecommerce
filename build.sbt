@@ -21,18 +21,29 @@ lazy val testSettings =
   inConfig(ItConfig)(Defaults.testSettings ++ scalafmtConfigSettings)
 
 lazy val core =
-  project.configs(IntegrationTest).settings(commonSettings, name += "-core", testSettings)
+  project
+    .configs(IntegrationTest)
+    .settings(commonSettings, name += "-core", testSettings)
+    .dependsOn(protobuf)
 
 lazy val protobuf =
   project.settings(
+    scalaVersion := "2.13.4",
+    version := "1.0.0",
+    organization := "io.gs",
+    name := "ecommerce-protobuf",
+    resolvers += Resolver.mavenLocal,
     Compile / PB.targets := Seq(
       scalapb.gen() -> (Compile / sourceManaged).value / "scalapb"
     ),
     libraryDependencies ++= protobufDependencies
   )
 
-
 lazy val ingestor = project
   .configs(IntegrationTest)
   .settings(commonSettings, name += "-ingestor", testSettings)
   .dependsOn(core, core % "compile->compile;test->test", core % "compile->compile;test->it")
+
+lazy val root = (project in file("."))
+  .aggregate(core, ingestor, protobuf)
+  .settings(name := "root", commonSettings)

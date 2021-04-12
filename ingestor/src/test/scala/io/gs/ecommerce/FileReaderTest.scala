@@ -4,6 +4,7 @@ import akka.NotUsed
 import akka.actor.ActorSystem
 import akka.stream.scaladsl._
 import io.gs.ecommerce.ingestor.FileReader
+import io.gs.ecommerce.suite.TestSuite
 
 import java.nio.file.{Path, Paths}
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -18,7 +19,7 @@ class FileReaderTest extends TestSuite {
   test("Read a file successful") {
     FileReader(path).read.runWith(Sink.collection).onComplete {
       case Failure(exception) => fail(exception.getMessage)
-      case Success(value)     => value.size shouldBe 3
+      case Success(value)     => assert(value.size == 3)
     }
   }
 

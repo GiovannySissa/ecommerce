@@ -4,13 +4,7 @@ import akka.actor.ActorSystem
 import akka.kafka.{ConsumerSettings, ProducerSettings}
 import io.gs.ecommerce.infrastructure.kafka.KafkaConfig
 import org.apache.kafka.clients.consumer.ConsumerConfig
-import org.apache.kafka.clients.producer.Producer
-import org.apache.kafka.common.serialization.{
-  ByteArrayDeserializer,
-  ByteArraySerializer,
-  StringDeserializer,
-  StringSerializer
-}
+import org.apache.kafka.common.serialization.{ByteArrayDeserializer, ByteArraySerializer, StringDeserializer, StringSerializer}
 
 object AkkaKafka {
 

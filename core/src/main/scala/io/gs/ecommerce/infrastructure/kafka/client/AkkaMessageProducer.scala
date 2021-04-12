@@ -13,8 +13,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class AkkaMessageProducer private (producerSettings: ProducerSettings[String, Array[Byte]])(implicit
     actorSystem: ActorSystem,
     exc: ExecutionContext
-) extends MessageProducer[Future[*]] {
-  override def send(topic: String, key: String, record: Array[Byte]): Future[Unit] = {
+) extends MessageProducer[Future[*]]{
+  override def send(topic: String, record: Array[Byte]): Future[Unit] = {
     Source
       .single(new ProducerRecord[String, Array[Byte]](topic, record))
       .map(ProducerMessage.single(_))
